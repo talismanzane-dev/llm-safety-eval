@@ -1,0 +1,24 @@
+# Byte-compiled / cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+.venv/
+
+# Secrets
+.env
+
+# Test cache
+.pytest_cache/
+
+# Editors
+.idea/
+.vscode/
+
+# Packaging
+dist/
+build/
+
+# Evaluation output (keep the directory, not the results)
+data/results/*
+!data/results/.gitkeep

@@ -1,0 +1,6 @@
+openai>=1.40
+anthropic>=0.40
+google-generativeai>=0.8
+requests>=2.31
+python-dotenv>=1.0
+pydantic>=2.5
