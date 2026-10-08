@@ -27,6 +27,8 @@ llm-safety-eval/
 ├── LICENSE
 ├── .gitignore
 ├── requirements.txt
+├── requirements-dev.txt     # requirements.txt + pytest
+├── .github/workflows/ci.yml # Tests + dry run on every push/PR to main
 ├── llm_safety_eval/
 │   ├── __init__.py          # Public API
 │   ├── config.py            # Env-based config: API keys + model definitions
@@ -34,6 +36,7 @@ llm-safety-eval/
 │   ├── harness.py           # SafetyHarness, TestPrompt/TestResult, refusal detection
 │   └── scoring.py           # Refusal rate, consistency, alignment, comparison tables
 ├── tests/
+│   ├── test_harness.py      # Offline pytest smoke tests (mock clients)
 │   └── test_suites/
 │       ├── refusal_consistency.py   # Same request, different phrasings
 │       ├── semantic_resistance.py   # Direct vs. decomposed / hypothetical / reframed
@@ -217,7 +220,13 @@ Metrics with no data are reported as `n/a`, never as a misleading `0%`. Treat sc
 
 ## Contributing
 
-New suites go in `tests/test_suites/` as a module exposing `SUITE_NAME`, `DESCRIPTION` and `get_prompts() -> list[TestPrompt]`. Give every prompt a stable `id`, a `group_id` shared by its variants, and an `expected` behavior. Check the full pipeline offline with `python examples/basic_run.py --dry-run` before opening a pull request.
+New suites go in `tests/test_suites/` as a module exposing `SUITE_NAME`, `DESCRIPTION` and `get_prompts() -> list[TestPrompt]`. Give every prompt a stable `id`, a `group_id` shared by its variants, and an `expected` behavior. Before opening a pull request, run the same checks as CI. Neither needs API keys:
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest tests/ -v
+python examples/basic_run.py --dry-run
+```
 
 ## License
 
