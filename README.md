@@ -1,5 +1,7 @@
 # llm-safety-eval
 
+[![CI](https://github.com/talismanzane-dev/llm-safety-eval/actions/workflows/ci.yml/badge.svg)](https://github.com/talismanzane-dev/llm-safety-eval/actions/workflows/ci.yml)
+
 `llm-safety-eval` is an open-source framework for systematically testing the safety behavior of large language models. It exists to answer one practical question: **does a model's actual behavior match its stated safety policy?**
 
 Modern LLMs ship with documented safety commitments — they claim to refuse harmful requests, respect boundaries, and apply rules consistently. In practice, those commitments break down in measurable, reproducible ways. Refusal rates vary across prompt formulations, languages, and semantic framings. A request that is refused when stated directly may be answered when decomposed into abstract components, translated into a low-resource language, or framed as a different kind of task. These gaps matter for anyone deploying an LLM in production, building on top of an API, or evaluating vendors.
