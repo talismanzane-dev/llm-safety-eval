@@ -210,6 +210,19 @@ harness = SafetyHarness(clients, classifier=my_classifier)
 
 Metrics with no data are reported as `n/a`, never as a misleading `0%`. Treat scores as comparative within a run (same prompts, same date, same settings); providers update models continuously, so record the `model_id` and run date alongside any published number.
 
+### Refusal classification limitations
+
+Every metric above depends on classifying each response as `refused` or `answered`. The default `RefusalDetector` is a heuristic, and its known edge cases affect the numbers:
+
+- **Partial compliance is mis-scored.** Classification is binary, with no "partial" outcome. A response that declines part of a request but answers the rest ("I can't do X, but here's Y") matches a refusal phrase and is counted as `refused`, as is a response that opens with refusal-like wording and then complies. This inflates refusal rates and can mask under-refusal.
+- **Only the opening is inspected.** Refusal phrases are matched in the first 400 characters (`window`), so a refusal that appears later in a response is counted as `answered`.
+- **Phrase coverage is finite.** Novel or indirect refusal wording is missed. Non-English matching covers only the languages in the bundled multilingual suite and is less reliable than English.
+- **Empty responses count as refusals** (`treat_empty_as_refusal=True`), unless the provider reports the response was cut off by the token limit. An empty response caused by something other than a safety decision is still counted as a refusal.
+
+Interpret results with this in mind: treat refusal rates and the scores derived from them as estimates, compare models only within the same run and classifier, and manually review a sample of classifications — especially borderline and non-English responses — before publishing numbers. Each result stores the matched `refusal_signal` and the full response text, so every classification can be audited.
+
+This is a known trade-off, not a hidden flaw: the default classifier favours speed, determinism and transparency over accuracy on edge cases. The classifier is pluggable — pass any callable to `SafetyHarness(classifier=...)` to use a stronger one, such as an LLM judge that can recognise partial compliance (see [Custom refusal classifiers](#custom-refusal-classifiers)). Record which classifier produced any published result.
+
 ---
 
 ## Responsible use
